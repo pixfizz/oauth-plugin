@@ -41,7 +41,9 @@ module OAuth
         end
 
         def allow?
-          if @strategies.include?(:interactive) && interactive
+          if @strategies.include?(:two_legged)
+            true
+          elsif @strategies.include?(:interactive) && interactive
             true
           elsif !(@strategies & env["oauth.strategies"].to_a).empty?
             if token.present?

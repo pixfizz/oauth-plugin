@@ -6,10 +6,10 @@ module OAuth
       def self.included(controller)
         controller.class_eval do
           before_filter :login_required, :only => [:authorize,:revoke]
-          oauthenticate :only => [:test_request]
+          #oauthenticate :only => [:test_request]
           oauthenticate :strategies => :token, :interactive => false, :only => [:invalidate,:capabilities]
           oauthenticate :strategies => :two_legged, :interactive => false, :only => [:request_token]
-          oauthenticate :strategies => :oauth10_request_token, :interactive => false, :only => [:access_token]
+          #oauthenticate :strategies => :oauth10_request_token, :interactive => false, :only => [:access_token]
           skip_before_filter :verify_authenticity_token, :only=>[:request_token, :access_token, :invalidate, :test_request, :token]
         end
       end
@@ -28,7 +28,7 @@ module OAuth
         if @token
           render :text => @token.to_query
         else
-          render :nothing => true, :status => 401
+          render :nothing => true, :status => 422
         end
       end
 
@@ -107,7 +107,7 @@ module OAuth
         unless @token.invalidated?
           if request.post?
             if user_authorizes_token?
-              @token.authorize!(current_user)
+              @token.authorize!(@token.client_application.user)
               callback_url  = @token.oob? ? @token.client_application.callback_url : @token.callback_url
               @redirect_url = URI.parse(callback_url) unless callback_url.blank?
 
