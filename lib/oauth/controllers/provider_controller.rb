@@ -17,7 +17,7 @@ module OAuth
       def request_token
         @token = current_client_application.create_request_token params
         if @token
-          render :text => @token.to_query
+          render :plain => @token.to_query
         else
           render :nothing => true, :status => 401
         end
@@ -26,7 +26,7 @@ module OAuth
       def access_token
         @token = current_token && current_token.exchange!
         if @token
-          render :text => @token.to_query
+          render :plain => @token.to_query
         else
           render :nothing => true, :status => 422
         end
@@ -49,7 +49,7 @@ module OAuth
       end
 
       def test_request
-        render :text => params.collect{|k,v|"#{k}=#{v}"}.join("&")
+        render :plain => params.collect{|k,v|"#{k}=#{v}"}.join("&")
       end
 
       def authorize
