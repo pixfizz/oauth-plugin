@@ -20,7 +20,7 @@ class Oauth2Verifier < OauthToken
 
   def to_query
     q = "code=#{token}"
-    q << "&state=#{URI.escape(state)}" if @state
+    q << "&state=#{ERB::Util.url_encode(state)}" if @state
     q
   end
 
